@@ -11,7 +11,7 @@ const initBot = () => {
     const bot = mineflayer.createBot(botArgs);
 
     bot.on('login', () => {
-        console.log('✅ Бот зашел на сервер!');
+        console.log('Bot is online!');
     });
 
     bot.on('spawn', () => {
@@ -22,11 +22,10 @@ const initBot = () => {
     });
 
     bot.on('end', () => {
-        console.log('❌ Переподключение через 10 секунд...');
         setTimeout(initBot, 10000);
     });
 
-    bot.on('error', (err) => console.log('Ошибка:', err));
+    bot.on('error', (err) => console.log(err));
 };
 
 initBot();
