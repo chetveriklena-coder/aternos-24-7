@@ -22,7 +22,7 @@ const initBot = () => {
     });
 
     bot.on('end', () => {
-        console.log('❌ Соединение потеряно. Переподключение...');
+        console.log('❌ Переподключение через 10 секунд...');
         setTimeout(initBot, 10000);
     });
 
