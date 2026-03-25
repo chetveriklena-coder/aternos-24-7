@@ -8,7 +8,7 @@ http.createServer((req, res) => {
 }).listen(process.env.PORT || 8080);
 
 const botArgs = {
-    host: 'gais_9009.aternos.me',
+    host: 'gais_9009.aternos.me:49959',
     port: 49959,
     username: 'AFK_Bot',
     version: '1.21.1'
