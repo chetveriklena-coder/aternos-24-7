@@ -1,11 +1,12 @@
 const mineflayer = require('mineflayer');
 const http = require('http');
 
-// 1. Создаем фальшивый сервер для Render
+// Создаем сервер, который Render будет видеть как "живой сайт"
+const port = process.env.PORT || 8080;
 http.createServer((req, res) => {
-    res.write("I am alive");
-    res.end();
-}).listen(8080);
+    res.writeHead(200);
+    res.end("OK");
+}).listen(port, "0.0.0.0");
 
 const botArgs = {
     host: 'gais_9009.aternos.me',
@@ -17,26 +18,18 @@ const botArgs = {
 const initBot = () => {
     const bot = mineflayer.createBot(botArgs);
 
-    bot.on('login', () => console.log('✅ Бот на базе!'));
-
     bot.on('spawn', () => {
-        console.log('📍 Бот появился в мире');
-        // Анти-АФК и фарм (машет рукой)
+        console.log('Бот на месте и стоит стабильно');
+        // Редкий взмах рукой раз в 30 сек, чтобы не кикнул сам Атернос
         setInterval(() => {
             bot.swingArm('left');
-        }, 15000); 
+        }, 30000);
     });
 
-    bot.on('death', () => {
-        setTimeout(() => bot.respawn(), 2000);
-    });
-
-    bot.on('end', () => {
-        console.log('❌ Вылет. Перезаход...');
-        setTimeout(initBot, 10000);
-    });
-
-    bot.on('error', (err) => console.log('Ошибка:', err));
+    bot.on('death', () => setTimeout(() => bot.respawn(), 2000));
+    bot.on('end', () => setTimeout(initBot, 5000));
+    bot.on('error', () => {}); 
 };
 
 initBot();
+
