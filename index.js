@@ -1,12 +1,11 @@
 const mineflayer = require('mineflayer');
 const http = require('http');
 
-// Создаем сервер, который Render будет видеть как "живой сайт"
-const port = process.env.PORT || 8080;
+// Это заставляет Render думать, что мы - сайт, и не выключать нас
 http.createServer((req, res) => {
     res.writeHead(200);
     res.end("OK");
-}).listen(port, "0.0.0.0");
+}).listen(process.env.PORT || 8080);
 
 const botArgs = {
     host: 'gais_9009.aternos.me',
@@ -18,17 +17,23 @@ const botArgs = {
 const initBot = () => {
     const bot = mineflayer.createBot(botArgs);
 
+    bot.on('login', () => console.log('✅ Бот в игре!'));
+
     bot.on('spawn', () => {
-        console.log('Бот на месте и стоит стабильно');
-        // Редкий взмах рукой раз в 30 сек, чтобы не кикнул сам Атернос
+        // Бот будет просто махать рукой раз в 30 секунд, чтобы не кикнуло за АФК
         setInterval(() => {
-            bot.swingArm('left');
+            if (bot.entity) bot.swingArm('left');
         }, 30000);
     });
 
     bot.on('death', () => setTimeout(() => bot.respawn(), 2000));
-    bot.on('end', () => setTimeout(initBot, 5000));
-    bot.on('error', () => {}); 
+    
+    bot.on('end', () => {
+        console.log('❌ Вылет, перезахожу...');
+        setTimeout(initBot, 5000);
+    });
+
+    bot.on('error', (err) => console.log('Ошибка:', err));
 };
 
 initBot();
